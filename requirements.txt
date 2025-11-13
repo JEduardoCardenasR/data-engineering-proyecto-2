@@ -2,4 +2,8 @@ psycopg2-binary
 SQLAlchemy
 pandas
 python-dotenv
+jupyter
+ipykernel
+matplotlib
+seaborn
 
