@@ -14,8 +14,8 @@ class ETLConfig:
     
     # ==================== PATHS ====================
     # Directorios relativos desde la raíz del proyecto
-    CSV_DIR = 'DataSet/CSV'
-    SQL_DIR = 'DataSet/sql'
+    CSV_DIR = 'data/CSV'
+    SQL_DIR = 'data/sql'
     
     # ==================== PARÁMETROS DE CARGA DE DATOS ====================
     # Encoding para archivos CSV

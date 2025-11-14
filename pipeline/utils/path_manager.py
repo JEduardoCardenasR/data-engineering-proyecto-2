@@ -24,6 +24,7 @@ class PathManager:
     _project_root: Optional[str] = None
     _current_dir: Optional[str] = None
     _csv_dir: Optional[str] = None
+    _initialized: bool = False
     
     def __new__(cls):
         """Implementa el patrón Singleton"""
@@ -33,14 +34,17 @@ class PathManager:
     
     def __init__(self):
         """Inicializa los paths solo una vez"""
-        if PathManager._project_root is None:
-            # Calcular project_root: Utils -> Avance1 -> raíz del proyecto
+        if not PathManager._initialized:
+            # Calcular project_root: utils -> pipeline -> raíz del proyecto
             current_file = os.path.abspath(__file__)
-            PathManager._current_dir = os.path.dirname(current_file)  # Avance1/Utils/
-            avance1_dir = os.path.dirname(PathManager._current_dir)    # Avance1/
-            PathManager._project_root = os.path.dirname(avance1_dir)   # raíz del proyecto
+            PathManager._current_dir = os.path.dirname(current_file)  # pipeline/utils/
+            pipeline_dir = os.path.dirname(PathManager._current_dir)    # pipeline/
+            PathManager._project_root = os.path.dirname(pipeline_dir)   # raíz del proyecto
             # Calcular CSV directory usando configuración centralizada
+            # Importar ETLConfig directamente (sin caché de módulo)
+            from .config import ETLConfig
             PathManager._csv_dir = ETLConfig.get_csv_dir_path(PathManager._project_root)
+            PathManager._initialized = True
     
     @classmethod
     def get_instance(cls) -> 'PathManager':
@@ -77,7 +81,7 @@ class PathManager:
         Retorna el directorio donde se encuentran los archivos CSV.
         
         Returns:
-            str: Ruta absoluta al directorio DataSet/CSV
+            str: Ruta absoluta al directorio data/CSV
         """
         return PathManager._csv_dir
     
