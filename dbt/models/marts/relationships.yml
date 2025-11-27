@@ -1,0 +1,23 @@
+version: 2
+
+# ============================================================================
+# Tests de Integridad Referencial - Relaciones entre Modelos
+# ============================================================================
+# 
+# Este archivo define las relaciones entre tablas de hechos y dimensiones
+# para garantizar integridad referencial mediante tests de dbt.
+# 
+# Los tests de 'relationships' validan que todos los valores en las columnas
+# de foreign key existen en las tablas de dimensiones correspondientes.
+# 
+# NOTA: Los tests de relationships a nivel de columna están definidos en
+#       models/marts/schema.yml. Este archivo documenta las relaciones
+#       y proporciona tests adicionales si es necesario.
+# ============================================================================
+
+# Los tests de relationships están definidos en schema.yml a nivel de columna.
+# Este archivo sirve como documentación de las relaciones del modelo.
+
+# Para agregar tests adicionales de relaciones, usar la macro validate_relationship
+# o crear tests SQL personalizados en tests/
+

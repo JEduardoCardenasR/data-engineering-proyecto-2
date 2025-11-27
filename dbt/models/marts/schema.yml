@@ -1,0 +1,191 @@
+version: 2
+
+models:
+  # Tablas de hechos
+  - name: fct_ventas
+    description: "Tabla de hechos de ventas. Contiene las transacciones de venta con sus medidas y claves foráneas a dimensiones."
+    columns:
+      - name: venta_id
+        description: "ID único de la venta (detalle_id)"
+        tests:
+          - unique
+          - not_null
+      - name: orden_id
+        description: "ID de la orden"
+      - name: usuario_id
+        description: "ID del usuario (Foreign key a dim_usuarios)"
+        tests:
+          - relationships:
+              to: ref('dim_usuarios')
+              field: usuario_id
+      - name: producto_id
+        description: "ID del producto (Foreign key a dim_productos)"
+        tests:
+          - relationships:
+              to: ref('dim_productos')
+              field: producto_id
+      - name: categoria_id
+        description: "ID de la categoría (Foreign key a dim_categorias)"
+        tests:
+          - relationships:
+              to: ref('dim_categorias')
+              field: categoria_id
+              config:
+                where: "categoria_id IS NOT NULL"
+      - name: fecha_venta_id
+        description: "ID de la fecha (Foreign key a dim_fecha)"
+        tests:
+          - relationships:
+              to: ref('dim_fecha')
+              field: fecha_id
+      - name: cantidad
+        description: "Cantidad vendida"
+      - name: precio_unitario
+        description: "Precio unitario"
+      - name: subtotal
+        description: "Subtotal de la venta"
+        
+  - name: fct_pagos
+    description: "Tabla de hechos de pagos. Contiene las transacciones de pago con sus medidas."
+    columns:
+      - name: pago_id
+        description: "ID único del pago"
+        tests:
+          - unique
+          - not_null
+      - name: orden_id
+        description: "ID de la orden"
+      - name: usuario_id
+        description: "ID del usuario (Foreign key a dim_usuarios)"
+        tests:
+          - relationships:
+              to: ref('dim_usuarios')
+              field: usuario_id
+      - name: metodo_pago_id
+        description: "ID del método de pago (Foreign key a dim_metodos_pago)"
+        tests:
+          - relationships:
+              to: ref('dim_metodos_pago')
+              field: metodo_pago_id
+      - name: fecha_pago_id
+        description: "ID de la fecha (Foreign key a dim_fecha)"
+        tests:
+          - relationships:
+              to: ref('dim_fecha')
+              field: fecha_id
+      - name: monto_pago
+        description: "Monto del pago"
+        
+  - name: fct_resenas
+    description: "Tabla de hechos de reseñas. Contiene las reseñas de productos con sus medidas."
+    columns:
+      - name: resena_id
+        description: "ID único de la reseña"
+        tests:
+          - unique
+          - not_null
+      - name: usuario_id
+        description: "ID del usuario (Foreign key a dim_usuarios)"
+        tests:
+          - relationships:
+              to: ref('dim_usuarios')
+              field: usuario_id
+      - name: producto_id
+        description: "ID del producto (Foreign key a dim_productos)"
+        tests:
+          - relationships:
+              to: ref('dim_productos')
+              field: producto_id
+      - name: fecha_resena_id
+        description: "ID de la fecha (Foreign key a dim_fecha)"
+        tests:
+          - relationships:
+              to: ref('dim_fecha')
+              field: fecha_id
+      - name: calificacion
+        description: "Calificación (1-5)"
+        
+  # Tablas de dimensiones
+  - name: dim_usuarios
+    description: "Tabla de dimensiones de usuarios. Contiene información descriptiva de los usuarios y métricas agregadas."
+    columns:
+      - name: usuario_id
+        description: "ID único del usuario"
+        tests:
+          - unique
+          - not_null
+      - name: nombre_completo
+        description: "Nombre completo del usuario"
+      - name: segmento_cliente
+        description: "Segmento del cliente (Nuevo, Ocasional, Regular, VIP)"
+        
+  - name: dim_productos
+    description: "Tabla de dimensiones de productos. Contiene información descriptiva de los productos y métricas de reseñas."
+    columns:
+      - name: producto_id
+        description: "ID único del producto"
+        tests:
+          - unique
+          - not_null
+      - name: categoria_id
+        description: "ID de la categoría (Foreign key a dim_categorias)"
+        tests:
+          - relationships:
+              to: ref('dim_categorias')
+              field: categoria_id
+              config:
+                where: "categoria_id IS NOT NULL"
+      - name: nombre
+        description: "Nombre del producto"
+      - name: precio
+        description: "Precio del producto"
+      - name: categoria_nombre
+        description: "Nombre de la categoría"
+      - name: calificacion_promedio
+        description: "Calificación promedio del producto"
+        
+  - name: dim_categorias
+    description: "Tabla de dimensiones de categorías. Contiene información descriptiva de las categorías y métricas agregadas."
+    columns:
+      - name: categoria_id
+        description: "ID único de la categoría"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre de la categoría"
+      - name: total_productos
+        description: "Total de productos en la categoría"
+        
+  - name: dim_metodos_pago
+    description: "Tabla de dimensiones de métodos de pago. Contiene información descriptiva y métricas de uso."
+    columns:
+      - name: metodo_pago_id
+        description: "ID único del método de pago"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre del método de pago"
+      - name: total_usos
+        description: "Total de veces usado"
+        
+  - name: dim_fecha
+    description: "Tabla de dimensiones de fecha. Tabla de fechas para análisis temporal con múltiples niveles de granularidad."
+    columns:
+      - name: fecha_id
+        description: "ID de la fecha (formato date)"
+        tests:
+          - unique
+          - not_null
+      - name: anio
+        description: "Año"
+      - name: mes
+        description: "Mes (1-12)"
+      - name: dia
+        description: "Día del mes"
+      - name: nombre_mes
+        description: "Nombre del mes"
+      - name: estacion
+        description: "Estación del año"
+

@@ -1,0 +1,31 @@
+# ============================================================================
+# Docker Compose Override - Ejemplo
+# ============================================================================
+# 
+# Este archivo permite sobrescribir configuraciones del docker-compose.yml
+# principal sin modificar el archivo original.
+# 
+# Uso:
+#   1. Copiar este archivo a docker-compose.override.yml
+#   2. Descomentar y ajustar las configuraciones necesarias
+#   3. docker-compose leerá automáticamente el override
+# ============================================================================
+
+# version: '3.8'
+# 
+# services:
+#   # Ejemplo: Cambiar puerto de PostgreSQL
+#   db:
+#     ports:
+#       - "5433:5432"  # Puerto alternativo
+# 
+#   # Ejemplo: Agregar variables de entorno adicionales
+#   dbt:
+#     environment:
+#       DBT_DEBUG: "true"
+# 
+#   # Ejemplo: Deshabilitar Jupyter si no se necesita
+#   # jupyter:
+#   #   profiles:
+#   #     - "jupyter-disabled"
+

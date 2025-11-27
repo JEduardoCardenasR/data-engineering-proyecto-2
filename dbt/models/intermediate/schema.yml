@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: int_ordenes_detalle
+    description: "Modelo intermedio que combina órdenes con sus detalles y productos"
+    
+  - name: int_ordenes_agregadas
+    description: "Modelo intermedio que agrega métricas por orden"
+    
+  - name: int_productos_resenas
+    description: "Modelo intermedio que combina productos con métricas de reseñas"
+    
+  - name: int_usuarios_ordenes
+    description: "Modelo intermedio que agrega métricas de órdenes por usuario"
+    
+  - name: int_ordenes_pagos
+    description: "Modelo intermedio que combina órdenes con información de pagos"
+    
+  - name: int_ventas_diarias
+    description: "Modelo intermedio que agrega ventas por día"
+    
+  - name: int_ventas_mensuales
+    description: "Modelo intermedio que agrega ventas por mes con comparaciones"
+

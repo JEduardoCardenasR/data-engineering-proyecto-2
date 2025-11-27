@@ -1,0 +1,80 @@
+# ============================================================================
+# .dockerignore - Archivos a excluir del contexto de Docker
+# ============================================================================
+
+# Entorno virtual
+venv/
+env/
+ENV/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+README_DOCKER.md
+
+# Archivos de ejemplo
+ejemplo-*
+
+# Datos sensibles
+.env
+*.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Datos grandes (opcional - descomentar si no quieres incluir CSVs)
+# data/CSV/
+# data/sql/
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
+
+# Documentación generada
+docs/_build/
+target/
+dbt/target/
+
+# Archivos temporales
+*.tmp
+*.temp
+.cache/

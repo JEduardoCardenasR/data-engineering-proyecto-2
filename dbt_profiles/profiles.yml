@@ -1,0 +1,27 @@
+# ============================================================================
+# Perfil de dbt para Docker
+# ============================================================================
+# 
+# Este archivo define la configuración de conexión a PostgreSQL
+# para usar dentro del contenedor Docker.
+# 
+# Las variables se pueden sobrescribir con variables de entorno
+# o usando un archivo .env
+# ============================================================================
+
+ecommerce_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: db  # Nombre del servicio en docker-compose
+      user: "{{ env_var('DB_USER', 'usuario') }}"
+      password: "{{ env_var('DB_PASS', 'password') }}"
+      port: 5432
+      dbname: "{{ env_var('DB_NAME', 'avance_1_db') }}"
+      schema: public
+      threads: 4
+      keepalives_idle: 0
+      connect_timeout: 10
+      search_path: public,staging,intermediate,marts,analytics,snapshots
+

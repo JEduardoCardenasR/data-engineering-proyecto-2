@@ -1,0 +1,60 @@
+name: 'ecommerce_dbt'
+version: '1.0.0'
+config-version: 2
+
+# Configuración del perfil de conexión
+# Este archivo debe estar acompañado de un profiles.yml en ~/.dbt/
+profile: 'ecommerce_dbt'
+
+# Configuración del modelo
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+docs-paths: ["docs"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Configuración de modelos
+models:
+  ecommerce_dbt:
+    # Modelos de staging
+    staging:
+      +materialized: view
+      +schema: staging
+    # Modelos intermedios
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    # Modelos finales (marts)
+    marts:
+      +materialized: table
+      +schema: marts
+    # Vistas analíticas
+    analytics:
+      +materialized: view
+      +schema: analytics
+      # Tablas de hechos
+      fact:
+        +materialized: table
+      # Tablas de dimensiones
+      dimension:
+        +materialized: table
+
+# Configuración de snapshots
+snapshots:
+  ecommerce_dbt:
+    +target_schema: snapshots
+
+# Variables del proyecto
+vars:
+  # Nombres de esquemas
+  staging_schema: staging
+  intermediate_schema: intermediate
+  marts_schema: marts
+

@@ -1,0 +1,264 @@
+version: 2
+
+models:
+  - name: stg_usuarios
+    description: "Modelo de staging para la tabla usuarios. Limpia y estandariza los datos de usuarios."
+    columns:
+      - name: usuario_id
+        description: "ID único del usuario"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre del usuario"
+        tests:
+          - not_null
+      - name: apellido
+        description: "Apellido del usuario"
+        tests:
+          - not_null
+      - name: dni
+        description: "Documento Nacional de Identidad"
+        tests:
+          - unique
+          - not_null
+      - name: email
+        description: "Correo electrónico del usuario"
+        tests:
+          - unique
+          - not_null
+      - name: fecha_registro
+        description: "Fecha de registro del usuario"
+
+  - name: stg_categorias
+    description: "Modelo de staging para la tabla categorias. Limpia y estandariza los datos de categorías."
+    columns:
+      - name: categoria_id
+        description: "ID único de la categoría"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre de la categoría"
+        tests:
+          - not_null
+
+  - name: stg_productos
+    description: "Modelo de staging para la tabla productos. Limpia y estandariza los datos de productos."
+    columns:
+      - name: producto_id
+        description: "ID único del producto"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre del producto"
+        tests:
+          - not_null
+      - name: precio
+        description: "Precio del producto"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: stock
+        description: "Cantidad en stock"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: categoria_id
+        description: "ID de la categoría a la que pertenece el producto"
+
+  - name: stg_ordenes
+    description: "Modelo de staging para la tabla ordenes. Limpia y estandariza los datos de órdenes."
+    columns:
+      - name: orden_id
+        description: "ID único de la orden"
+        tests:
+          - unique
+          - not_null
+      - name: usuario_id
+        description: "ID del usuario que realizó la orden"
+      - name: fecha_orden
+        description: "Fecha en que se realizó la orden"
+        tests:
+          - not_null
+      - name: total
+        description: "Total de la orden"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: estado
+        description: "Estado de la orden"
+
+  - name: stg_detalle_ordenes
+    description: "Modelo de staging para la tabla detalle_ordenes. Limpia y estandariza los datos de detalles de órdenes."
+    columns:
+      - name: detalle_id
+        description: "ID único del detalle"
+        tests:
+          - unique
+          - not_null
+      - name: orden_id
+        description: "ID de la orden"
+        tests:
+          - not_null
+      - name: producto_id
+        description: "ID del producto"
+        tests:
+          - not_null
+      - name: cantidad
+        description: "Cantidad de productos"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: precio_unitario
+        description: "Precio unitario del producto"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: stg_direcciones_envio
+    description: "Modelo de staging para la tabla direcciones_envio. Limpia y estandariza los datos de direcciones."
+    columns:
+      - name: direccion_id
+        description: "ID único de la dirección"
+        tests:
+          - unique
+          - not_null
+      - name: usuario_id
+        description: "ID del usuario"
+        tests:
+          - not_null
+      - name: calle
+        description: "Calle de la dirección"
+        tests:
+          - not_null
+      - name: ciudad
+        description: "Ciudad"
+        tests:
+          - not_null
+      - name: pais
+        description: "País"
+        tests:
+          - not_null
+
+  - name: stg_carrito
+    description: "Modelo de staging para la tabla carrito. Limpia y estandariza los datos del carrito de compras."
+    columns:
+      - name: carrito_id
+        description: "ID único del item del carrito"
+        tests:
+          - unique
+          - not_null
+      - name: usuario_id
+        description: "ID del usuario"
+        tests:
+          - not_null
+      - name: producto_id
+        description: "ID del producto"
+        tests:
+          - not_null
+      - name: cantidad
+        description: "Cantidad de productos en el carrito"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: fecha_agregado
+        description: "Fecha en que se agregó el producto al carrito"
+
+  - name: stg_metodos_pago
+    description: "Modelo de staging para la tabla metodos_pago. Limpia y estandariza los datos de métodos de pago."
+    columns:
+      - name: metodo_pago_id
+        description: "ID único del método de pago"
+        tests:
+          - unique
+          - not_null
+      - name: nombre
+        description: "Nombre del método de pago"
+        tests:
+          - not_null
+
+  - name: stg_ordenes_metodos_pago
+    description: "Modelo de staging para la tabla ordenes_metodos_pago. Limpia y estandariza los datos de relación orden-método de pago."
+    columns:
+      - name: orden_metodo_id
+        description: "ID único de la relación"
+        tests:
+          - unique
+          - not_null
+      - name: orden_id
+        description: "ID de la orden"
+        tests:
+          - not_null
+      - name: metodo_pago_id
+        description: "ID del método de pago"
+        tests:
+          - not_null
+      - name: monto_pagado
+        description: "Monto pagado con este método"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+
+  - name: stg_resenas_productos
+    description: "Modelo de staging para la tabla resenas_productos. Limpia y estandariza los datos de reseñas."
+    columns:
+      - name: resena_id
+        description: "ID único de la reseña"
+        tests:
+          - unique
+          - not_null
+      - name: usuario_id
+        description: "ID del usuario que hizo la reseña"
+        tests:
+          - not_null
+      - name: producto_id
+        description: "ID del producto reseñado"
+        tests:
+          - not_null
+      - name: calificacion
+        description: "Calificación del producto (1-5)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+      - name: fecha
+        description: "Fecha de la reseña"
+
+  - name: stg_historial_pagos
+    description: "Modelo de staging para la tabla historial_pagos. Limpia y estandariza los datos del historial de pagos."
+    columns:
+      - name: pago_id
+        description: "ID único del pago"
+        tests:
+          - unique
+          - not_null
+      - name: orden_id
+        description: "ID de la orden"
+        tests:
+          - not_null
+      - name: metodo_pago_id
+        description: "ID del método de pago"
+        tests:
+          - not_null
+      - name: monto
+        description: "Monto del pago"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+      - name: fecha_pago
+        description: "Fecha del pago"
+        tests:
+          - not_null
+      - name: estado_pago
+        description: "Estado del pago"
+

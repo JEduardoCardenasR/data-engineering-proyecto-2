@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: vw_ventas_resumen
+    description: "Vista analítica pre-agregada de ventas. Optimizada para análisis rápidos combinando hechos y dimensiones."
+    columns:
+      - name: fecha_id
+        description: "Fecha de la venta"
+      - name: producto_nombre
+        description: "Nombre del producto"
+      - name: categoria_nombre
+        description: "Nombre de la categoría"
+      - name: usuario_nombre
+        description: "Nombre completo del usuario"
+      - name: segmento_cliente
+        description: "Segmento del cliente"
+      - name: total_ventas
+        description: "Total de ventas en este grupo"
+      - name: ticket_promedio
+        description: "Ticket promedio por orden"
+
+  - name: vw_clientes_activos
+    description: "Vista analítica de clientes con métricas de comportamiento y estado de actividad."
+    columns:
+      - name: usuario_id
+        description: "ID del usuario"
+      - name: nombre_completo
+        description: "Nombre completo"
+      - name: segmento_cliente
+        description: "Segmento del cliente"
+      - name: estado_cliente
+        description: "Estado de actividad (Activo, Inactivo Reciente, Inactivo, Nunca Compró)"
+      - name: dias_desde_ultima_compra
+        description: "Días desde la última compra"
+      - name: total_gastado
+        description: "Total gastado históricamente"
+
+  - name: vw_productos_performance
+    description: "Vista analítica de performance de productos con métricas de ventas, stock y reseñas."
+    columns:
+      - name: producto_id
+        description: "ID del producto"
+      - name: producto_nombre
+        description: "Nombre del producto"
+      - name: categoria_nombre
+        description: "Categoría del producto"
+      - name: total_revenue
+        description: "Revenue total generado"
+      - name: calificacion_promedio
+        description: "Calificación promedio de reseñas"
+      - name: categoria_performance
+        description: "Categoría de performance (Estrella, Alto Valor, Alta Calificación, etc.)"
+      - name: ratio_rotacion
+        description: "Ratio de rotación de inventario"
+
+  - name: vw_ventas_temporales
+    description: "Vista analítica de ventas con análisis temporal, tendencias y promedios móviles."
+    columns:
+      - name: fecha_id
+        description: "Fecha"
+      - name: anio
+        description: "Año"
+      - name: mes
+        description: "Mes"
+      - name: nombre_dia_semana
+        description: "Nombre del día de la semana"
+      - name: total_ventas
+        description: "Total de ventas del día"
+      - name: crecimiento_dia_anterior_pct
+        description: "Crecimiento porcentual vs día anterior"
+      - name: promedio_movil_7_dias
+        description: "Promedio móvil de 7 días"
+      - name: promedio_movil_30_dias
+        description: "Promedio móvil de 30 días"
+
+  - name: vw_pagos_resumen
+    description: "Vista analítica de pagos y transacciones con métricas de éxito y métodos de pago."
+    columns:
+      - name: metodo_pago_nombre
+        description: "Nombre del método de pago"
+      - name: total_recaudado
+        description: "Total recaudado"
+      - name: tasa_exito_pct
+        description: "Tasa de éxito de pagos (%)"
+      - name: pagos_completados
+        description: "Número de pagos completados"
+      - name: pagos_rechazados
+        description: "Número de pagos rechazados"
+

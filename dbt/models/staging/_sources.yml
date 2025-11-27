@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Tablas fuente de datos crudos desde la base de datos de producción"
+    database: "{{ var('database', 'avance_1_db') }}"
+    schema: "{{ var('schema', 'public') }}"
+    tables:
+      - name: usuarios
+        description: "Tabla de usuarios"
+      - name: categorias
+        description: "Tabla de categorías"
+      - name: productos
+        description: "Tabla de productos"
+      - name: ordenes
+        description: "Tabla de órdenes"
+      - name: detalle_ordenes
+        description: "Tabla de detalles de órdenes"
+      - name: direcciones_envio
+        description: "Tabla de direcciones de envío"
+      - name: carrito
+        description: "Tabla de carrito de compras"
+      - name: metodos_pago
+        description: "Tabla de métodos de pago"
+      - name: ordenes_metodos_pago
+        description: "Tabla de relación orden-método de pago"
+      - name: resenas_productos
+        description: "Tabla de reseñas de productos"
+      - name: historial_pagos
+        description: "Tabla de historial de pagos"
+

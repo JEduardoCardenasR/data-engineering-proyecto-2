@@ -1,0 +1,165 @@
+version: '3.8'
+
+# ============================================================================
+# Docker Compose para el Proyecto de Data Engineering - E-commerce
+# ============================================================================
+# 
+# Servicios incluidos:
+# - db: PostgreSQL 16
+# - pgadmin: Interfaz web para gestión de PostgreSQL
+# - dbt: Contenedor con dbt y herramientas de análisis
+# 
+# Uso:
+#   docker-compose up -d          # Iniciar todos los servicios
+#   docker-compose down           # Detener todos los servicios
+#   docker-compose logs dbt       # Ver logs del contenedor dbt
+# ============================================================================
+
+services:
+  # ============================================================================
+  # Servicio: PostgreSQL Database
+  # ============================================================================
+  db:
+    image: postgres:16-alpine
+    container_name: ecommerce_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-avance_1_db}
+      POSTGRES_USER: ${POSTGRES_USER:-usuario}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      # Persistencia de datos
+      - postgres_data:/var/lib/postgresql/data
+      # Scripts de inicialización (opcional - descomentar si se necesitan)
+      # - ./dbt/sql:/docker-entrypoint-initdb.d/init-scripts:ro
+      # - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-usuario} -d ${POSTGRES_DB:-avance_1_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce_network
+
+  # ============================================================================
+  # Servicio: pgAdmin (Interfaz Web para PostgreSQL)
+  # ============================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ecommerce_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@ecommerce.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "${PGADMIN_PORT:-8080}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  # ============================================================================
+  # Servicio: dbt (Data Build Tool)
+  # ============================================================================
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce_dbt
+    restart: unless-stopped
+    environment:
+      # Variables de entorno para conexión a PostgreSQL
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-avance_1_db}
+      DB_USER: ${POSTGRES_USER:-usuario}
+      DB_PASS: ${POSTGRES_PASSWORD:-password}
+      # Variables para dbt
+      DBT_PROFILES_DIR: /root/.dbt
+      DBT_PROJECT_DIR: /app/dbt
+    volumes:
+      # Montar el proyecto completo
+      - .:/app
+      # Perfiles de dbt (si existen)
+      - ./dbt_profiles:/root/.dbt:ro
+      # Excluir venv y otros directorios innecesarios
+      - /app/venv
+      - /app/__pycache__
+      - /app/.git
+    working_dir: /app/dbt
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+    # Comando por defecto: mantener contenedor corriendo
+    command: tail -f /dev/null
+    # Comandos útiles:
+    # docker-compose exec dbt dbt run
+    # docker-compose exec dbt dbt test
+    # docker-compose exec dbt dbt snapshot
+
+  # ============================================================================
+  # Servicio: Jupyter (Opcional - para notebooks)
+  # ============================================================================
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecommerce_jupyter
+    restart: unless-stopped
+    environment:
+      # Variables de entorno para conexión a PostgreSQL
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${POSTGRES_DB:-avance_1_db}
+      DB_USER: ${POSTGRES_USER:-usuario}
+      DB_PASS: ${POSTGRES_PASSWORD:-password}
+      # Jupyter
+      JUPYTER_ENABLE_LAB: yes
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    volumes:
+      - .:/app
+      - jupyter_data:/root/.jupyter
+      - /app/venv
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+# ============================================================================
+# Volúmenes
+# ============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+  jupyter_data:
+    driver: local
+
+# ============================================================================
+# Redes
+# ============================================================================
+networks:
+  ecommerce_network:
+    driver: bridge
+

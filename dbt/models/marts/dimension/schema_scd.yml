@@ -1,0 +1,87 @@
+version: 2
+
+models:
+  - name: dim_productos_scd2
+    description: "Dimensión de productos con SCD Type 2. Mantiene historial completo de cambios en precio, stock y categoría."
+    columns:
+      - name: producto_id
+        description: "ID único del producto"
+        tests:
+          - not_null
+      - name: precio
+        description: "Precio del producto en este momento histórico"
+      - name: stock
+        description: "Stock del producto en este momento histórico"
+      - name: fecha_inicio_validez
+        description: "Fecha desde la cual esta versión es válida"
+        tests:
+          - not_null
+      - name: fecha_fin_validez
+        description: "Fecha hasta la cual esta versión es válida (9999-12-31 para versión actual)"
+        tests:
+          - not_null
+      - name: es_actual
+        description: "Indicador si esta es la versión actual del producto"
+        tests:
+          - not_null
+      - name: scd_id
+        description: "ID único del registro SCD"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_usuarios_scd2
+    description: "Dimensión de usuarios con SCD Type 2. Mantiene historial completo de cambios en segmentación y métricas."
+    columns:
+      - name: usuario_id
+        description: "ID único del usuario"
+        tests:
+          - not_null
+      - name: segmento_cliente
+        description: "Segmento del cliente en este momento histórico"
+      - name: total_ordenes
+        description: "Total de órdenes en este momento histórico"
+      - name: fecha_inicio_validez
+        description: "Fecha desde la cual esta versión es válida"
+        tests:
+          - not_null
+      - name: fecha_fin_validez
+        description: "Fecha hasta la cual esta versión es válida (9999-12-31 para versión actual)"
+        tests:
+          - not_null
+      - name: es_actual
+        description: "Indicador si esta es la versión actual del usuario"
+        tests:
+          - not_null
+      - name: scd_id
+        description: "ID único del registro SCD"
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_productos_scd1
+    description: "Dimensión de productos SCD Type 1. Solo contiene la versión actual (sin historial)."
+    columns:
+      - name: producto_id
+        description: "ID único del producto"
+        tests:
+          - unique
+          - not_null
+      - name: precio
+        description: "Precio actual del producto"
+      - name: fecha_ultima_actualizacion
+        description: "Fecha de última actualización del registro"
+
+  - name: dim_usuarios_scd1
+    description: "Dimensión de usuarios SCD Type 1. Solo contiene la versión actual (sin historial)."
+    columns:
+      - name: usuario_id
+        description: "ID único del usuario"
+        tests:
+          - unique
+          - not_null
+      - name: segmento_cliente
+        description: "Segmento actual del cliente"
+      - name: fecha_ultima_actualizacion
+        description: "Fecha de última actualización del registro"
+
